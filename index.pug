@@ -1,0 +1,78 @@
+html
+    head
+        title= 'JS Materials'
+        link(rel='stylesheet', href='stylesheets/reset.css')
+        link(rel='stylesheet', href='stylesheets/breakpoints.css')
+        link(rel='stylesheet', href='stylesheets/layout.css')
+        link(rel='stylesheet', href='stylesheets/content.css')
+        link(rel='stylesheet', href='stylesheets/header.css')
+        link(rel='stylesheet', href='stylesheets/footer.css')
+        link(rel='stylesheet', href='stylesheets/sidebar.css')
+        link(rel='stylesheet', href='stylesheets/topnav.css')
+    body(class='layout')
+        // If logged in
+        if student
+            .topnav
+              a.active Student Name: #{student}
+              .topnav_right
+                a(href='/auth/logout') SIGN OUT
+            // Table of contents
+            .sidebar
+                each m in material
+                    // Option in table of contents
+                    // On click opens modal window
+                    button(class='sidebar__item', onclick='openMaterial(this.id)', id=m.chapter +'.'+ m.name) #{m.chapter}.#{m.name}
+
+                // If admin, show upload material option
+                if student == 'admin'
+                    form(action='materials', method='POST', enctype="multipart/form-data")
+                        input(type='file', name='toUpload')
+                        button(type='submit')='Upload File'
+
+            each m in material
+                // Modal window with content(pdf)   !!!!! DEFAULT DISPLAY MUST BE none !!!!!
+                div(id='modal' + m.chapter +'.'+ m.name, class='modal')
+
+                    // PDF goes here
+                    canvas(id='the-canvas' class='modal__pdf')
+
+                    // Previous/Next buttons
+                    div(class='modal__buttons')
+                        button#prev(style='background-color: #008CBA; color:white;') Previous
+                        button#next(style='background-color: #008CBA;  color:white;') Next
+                        span
+                            span(id='page_num')='Page: '
+                            ='/'
+                            span(id='page_count')=''
+
+                    // Code output window
+                    div(class='modal__code')
+
+            // JavaScript code for rendering corresponding PDF using PDF.js
+
+
+            // JavaScript code for opening modal window (openMaterial())
+            script.
+                function openMaterial(id) {
+                    let materials = !{JSON.stringify(material)}
+                    materials.forEach(m => {
+                        const to_close = document.getElementById('modal' + m.chapter + '.' + m.name)
+                        to_close.style.display = 'none'
+
+                    })
+                    const b = document.getElementById(id)
+                    const modal = document.getElementById('modal' + id)
+                    modal.style.display = 'block'
+                    renderPDF(id)
+                };
+
+
+        else
+            // Sign in form if user is not authenticated
+            form(method='post' action='auth' class='auth_form')
+                h1(class='auth_form__title')='JS Materials'
+                input(type="text" placeholder="Name..." name="studentName" class='auth_form__input')
+                input(type="text" placeholder="Student ID..." name="studentID" class='auth_form__input')
+                button(type='submit' class='auth_form__button')='Sign In'
+
+
