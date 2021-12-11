@@ -1,0 +1,34 @@
+/*BLOCK*/
+.modal{
+    display: none;
+    width: 600px;
+    height: 800px;
+    position:absolute;
+    float:left;
+    left:50%;
+    top:50%;
+    transform: translate(-40%, 10%);
+    active:black;
+
+
+}
+
+
+/*ELEMENT*/
+.modal__pdf{
+    background-color: deeppink;
+
+}
+
+/*Previous/Next buttons block*/
+.modal__buttons{
+    background-color: deeppink;
+    align-content:left;
+}
+
+.modal__code{
+
+}
+
+
+/*MODIFIER*/

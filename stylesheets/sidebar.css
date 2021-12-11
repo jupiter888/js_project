@@ -1,0 +1,35 @@
+/*BLOCK*/
+.sidebar{
+    display:flex;
+    justify-content:flex-start;
+    flex-direction: column;
+    padding-right:2rem;
+    padding-low:2rem;
+    grid-row: 1/1;
+}
+
+
+/*ELEMENT*/
+.sidebar__item{
+    background-color: #008CBA; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+
+.sidebar__item:hover {
+    background-color: mediumturquoise;
+    color: darkmagenta;
+}
+.sidebar__item:active {
+    background-color: mediumturquoise;
+    color: darkmagenta;
+}
+
+
+/*MODIFIER*/
