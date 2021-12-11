@@ -9,6 +9,12 @@ html
         link(rel='stylesheet', href='stylesheets/footer.css')
         link(rel='stylesheet', href='stylesheets/sidebar.css')
         link(rel='stylesheet', href='stylesheets/topnav.css')
+        style.
+            body{
+                background-color:purple ;
+                color: darkmagenta;
+            }
+
     body(class='layout')
         // If logged in
         if student
@@ -21,8 +27,8 @@ html
                 each m in material
                     // Option in table of contents
                     // On click opens modal window
-                    button(class='sidebar__item', onclick='openMaterial(this.id)', id=m.chapter +'.'+ m.name) #{m.chapter}.#{m.name}
-
+                    button(class='sidebar__item', onclick="openMaterial(this.id)" onclick="highlightTab(this.id,'blue')" /*onmouseup="highlightTab(this.id,'blue')"*/ , id=m.chapter +'.'+ m.name) #{m.chapter}.#{m.name}
+                    /*attempting active buttons on this sidebar nav*/
                 // If admin, show upload material option
                 if student == 'admin'
                     form(action='materials', method='POST', enctype="multipart/form-data")
@@ -53,6 +59,20 @@ html
 
             // JavaScript code for opening modal window (openMaterial())
             script.
+                function highlightTab(elmnt, clr) {
+                     elmnt.style.color = clr;
+                }
+                // Add active class to the current button (highlight it)
+                var header = document.getElementById("sidebar");
+                var btns = header.getElementsByClassName("sidebar__item");
+                for (var i = 0; i < btns.length; i++) {
+                  btns[i].addEventListener("click", function() {
+                  var current = document.getElementsByClassName("active");
+                  current[0].className = current[0].className.replace(" active", "");
+                  this.className += " active";
+                  });
+                }
+
                 function openMaterial(id) {
                     let materials = !{JSON.stringify(material)}
                     materials.forEach(m => {
