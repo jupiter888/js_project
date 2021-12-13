@@ -27,64 +27,60 @@ html
                 each m in material
                     // Option in table of contents
                     // On click opens modal window
-                    button(class='sidebar__item', onclick="openMaterial(this.id)" onclick="highlightTab(this.id,'blue')" /*onmouseup="highlightTab(this.id,'blue')"*/ , id=m.chapter +'.'+ m.name) #{m.chapter}.#{m.name}
-                    /*attempting active buttons on this sidebar nav*/
+                    button(class='sidebar__item', onclick="openMaterial(this.id)" , id=m.chapter +'.'+ m.name) #{m.chapter}.#{m.name}
+
                 // If admin, show upload material option
                 if student == 'admin'
                     form(action='materials', method='POST', enctype="multipart/form-data")
                         input(type='file', name='toUpload')
                         button(type='submit')='Upload File'
 
-            each m in material
-                // Modal window with content(pdf)   !!!!! DEFAULT DISPLAY MUST BE none !!!!!
-                div(id='modal' + m.chapter +'.'+ m.name, class='modal')
+                each m in material
+                    // Modal window with content(pdf)   !!!!! DEFAULT DISPLAY MUST BE none !!!!!
+                    div(id='modal' + m.chapter +'.'+ m.name, class='modal')
 
-                    // PDF goes here
-                    canvas(id='the-canvas' class='modal__pdf')
+                        // PDF goes here
+                        canvas(id='the-canvas' class='modal__pdf')
 
-                    // Previous/Next buttons
-                    div(class='modal__buttons')
-                        button#prev(style='background-color: #008CBA; color:white;') Previous
-                        button#next(style='background-color: #008CBA;  color:white;') Next
-                        span
-                            span(id='page_num')='Page: '
-                            ='/'
-                            span(id='page_count')=''
+                        // Previous/Next buttons
+                        div(class='modal__buttons')
+                            button#prev(style='background-color: #008CBA; color:white;') Previous
+                            button#next(style='background-color: #008CBA;  color:white;') Next
+                            span
+                                span(id='page_num')='Page: '
+                                ='/'
+                                span(id='page_count')=''
 
-                    // Code output window
-                    div(class='modal__code')
+                        // Code output window
+                        div(class='modal__code')
 
-            // JavaScript code for rendering corresponding PDF using PDF.js
+                // JavaScript code for rendering corresponding PDF using PDF.js
 
 
-            // JavaScript code for opening modal window (openMaterial())
-            script.
-                function highlightTab(elmnt, clr) {
-                     elmnt.style.color = clr;
-                }
-                // Add active class to the current button (highlight it)
-                var header = document.getElementById("sidebar");
-                var btns = header.getElementsByClassName("sidebar__item");
-                for (var i = 0; i < btns.length; i++) {
-                  btns[i].addEventListener("click", function() {
-                  var current = document.getElementsByClassName("active");
-                  current[0].className = current[0].className.replace(" active", "");
-                  this.className += " active";
-                  });
-                }
+                // JavaScript code for opening modal window (openMaterial())
+                script.
+                    function highlightTab(elmnt, clr) {
+                         elmnt.style.color = clr;
+                    }
+                    // Add active class to the current button (highlight it)
 
-                function openMaterial(id) {
-                    let materials = !{JSON.stringify(material)}
-                    materials.forEach(m => {
-                        const to_close = document.getElementById('modal' + m.chapter + '.' + m.name)
-                        to_close.style.display = 'none'
+                    document.getElementsByClassName("sidebar__item");
+                                for (i = 0; i < sidebar__item.length; i++) {
+                                    sidebar__item[i].sidebar =sidebar__item[i].sidebar.replace(" active", "");
+                    //end of attempt to highlight the clicked topic on the sidebar nav
 
-                    })
-                    const b = document.getElementById(id)
-                    const modal = document.getElementById('modal' + id)
-                    modal.style.display = 'block'
-                    renderPDF(id)
-                };
+                    function openMaterial(id) {
+                        let materials = !{JSON.stringify(material)}
+                        materials.forEach(m => {
+                            const to_close = document.getElementById('modal' + m.chapter + '.' + m.name)
+                            to_close.style.display = 'none'
+
+                        })
+                        const b = document.getElementById(id)
+                        const modal = document.getElementById('modal' + id)
+                        modal.style.display = 'block'
+                        renderPDF(id)
+                    };
 
 
         else
