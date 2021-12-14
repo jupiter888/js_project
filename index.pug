@@ -1,6 +1,10 @@
 html
     head
         title= 'JS Materials'
+
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js')
+        script(src='javascripts/Timer.js')
+
         link(rel='stylesheet', href='stylesheets/reset.css')
         link(rel='stylesheet', href='stylesheets/breakpoints.css')
         link(rel='stylesheet', href='stylesheets/layout.css')
@@ -8,79 +12,110 @@ html
         link(rel='stylesheet', href='stylesheets/header.css')
         link(rel='stylesheet', href='stylesheets/footer.css')
         link(rel='stylesheet', href='stylesheets/sidebar.css')
-        link(rel='stylesheet', href='stylesheets/topnav.css')
-        style.
-            body{
-                background-color:purple ;
-                color: darkmagenta;
-            }
+        link(rel='stylesheet', href='stylesheets/auth_form.css')
 
     body(class='layout')
         // If logged in
         if student
-            .topnav
-              a.active Student Name: #{student}
-              .topnav_right
-                a(href='/auth/logout') SIGN OUT
+            div(class="header")
+                p(class="header__name") Student: #{student}
+                a(href='/auth/logout', class="header__logout") SIGN OUT
             // Table of contents
-            .sidebar
+            div(class="sidebar")
+                p(class="sidebar__title")='Topics'
                 each m in material
                     // Option in table of contents
                     // On click opens modal window
-                    button(class='sidebar__item', onclick="openMaterial(this.id)" , id=m.chapter +'.'+ m.name) #{m.chapter}.#{m.name}
-
+                    button(class='sidebar__item' onclick="openMaterial(this.id)" id=m.chapter +'.'+ m.name) #{m.chapter}.#{m.name}
                 // If admin, show upload material option
                 if student == 'admin'
                     form(action='materials', method='POST', enctype="multipart/form-data")
                         input(type='file', name='toUpload')
                         button(type='submit')='Upload File'
 
+            // Modal window with content(pdf)   !!!!! DEFAULT DISPLAY MUST BE none !!!!!
+            div(id='modal', class='modal')
+
                 each m in material
-                    // Modal window with content(pdf)   !!!!! DEFAULT DISPLAY MUST BE none !!!!!
-                    div(id='modal' + m.chapter +'.'+ m.name, class='modal')
+                    // PDF goes here
+                    canvas(id='the-canvas' + m.chapter +'.'+ m.name class='modal__pdf')
 
-                        // PDF goes here
-                        canvas(id='the-canvas' class='modal__pdf')
-
-                        // Previous/Next buttons
-                        div(class='modal__buttons')
-                            button#prev(style='background-color: #008CBA; color:white;') Previous
-                            button#next(style='background-color: #008CBA;  color:white;') Next
-                            span
-                                span(id='page_num')='Page: '
-                                ='/'
-                                span(id='page_count')=''
-
-                        // Code output window
-                        div(class='modal__code')
+                // Previous/Next buttons
+                div(class='modal__buttons')
+                    button#prev Previous
+                    span
+                        span(id='page_num')='Page: '
+                        ='/'
+                        span(id='page_count')=''
+                    button#next Next
+                    button(onclick='openCodeOutput()') Output
 
                 // JavaScript code for rendering corresponding PDF using PDF.js
+                script(src='javascripts/renderPDF.js')
+
+                // Code output window
+                div#output(class='modal__code')
+                    p#output_code
+                    // each m in material
+                    //     script(src='javascripts/code_examples/' + m.chapter +'.'+ m.name + '.js')
 
 
-                // JavaScript code for opening modal window (openMaterial())
-                script.
-                    function highlightTab(elmnt, clr) {
-                         elmnt.style.color = clr;
+
+            // JavaScript code for opening modal window (openMaterial())
+            script(type='text/javascript').
+                function openMaterial(id) {
+                    let materials = !{JSON.stringify(material)}
+                    materials.forEach(m => {
+                        const to_close = document.getElementById('the-canvas' + m.chapter + '.' + m.name)
+                        to_close.style.display = 'none'
+                    })
+
+
+                    const chapter = id.substr(0, 1)
+                    localStorage.clear()
+                    localStorage.setItem('chapter', chapter)
+
+
+                    const canvas = document.getElementById('the-canvas' + id)
+                    canvas.style.display = 'block'
+                    const b = document.getElementById(id)
+                    const modal = document.getElementById('modal')
+                    modal.style.display = 'flex'
+                    renderPDF(id)
+
+                };
+                timer();
+
+                function openCodeOutput() {
+                    // Output block
+                    const outputWindow = document.getElementById('output')
+                    // Output code text block
+                    const outputCode = document.getElementById('output_code')
+                    // Output script block
+                    const imports = document.getElementById('imports')
+                    // Active chapter
+                    const chapter = localStorage.getItem('chapter')
+                    // Active page number
+                    const page = localStorage.getItem('page')
+
+                    eval(`var lesson = new Lesson${chapter}()`)
+                    eval(`lesson.page${page}()`)
+
+                    if (outputWindow.style.display === 'block'){
+                        outputWindow.style.display = 'none'
+                    } else{
+                        outputWindow.style.display = 'block'
                     }
-                    // Add active class to the current button (highlight it)
 
-                    document.getElementsByClassName("sidebar__item");
-                                for (i = 0; i < sidebar__item.length; i++) {
-                                    sidebar__item[i].sidebar =sidebar__item[i].sidebar.replace(" active", "");
-                    //end of attempt to highlight the clicked topic on the sidebar nav
 
-                    function openMaterial(id) {
-                        let materials = !{JSON.stringify(material)}
-                        materials.forEach(m => {
-                            const to_close = document.getElementById('modal' + m.chapter + '.' + m.name)
-                            to_close.style.display = 'none'
+                }
 
-                        })
-                        const b = document.getElementById(id)
-                        const modal = document.getElementById('modal' + id)
-                        modal.style.display = 'block'
-                        renderPDF(id)
-                    };
+
+                document.addEventListener('focusout', () => {
+                    // Output block
+                    const outputWindow = document.getElementById('output')
+                    outputWindow.style.display = 'none'
+                })
 
 
         else
