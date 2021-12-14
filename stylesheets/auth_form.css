@@ -1,21 +1,57 @@
 /*BLOCK*/
 .auth_form{
+    grid-column: 2;
+    grid-row: 2;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+
+
+    height: 50%;
 
 }
 
 
 /*ELEMENT*/
 .auth_form__title{
+    font-size: 3rem;
+    color: #008CBA;
+    text-align: center;
 
+    margin-bottom: 2rem;
 }
 
 .auth_form__input{
+    border: 1px solid #008CBA;
+    border-radius: 3rem;
+
+    padding: .5rem;
+    margin: .5rem 3rem;
+
+    color: #008CBA;
 
 }
 
 .auth_form__button{
+    background-color: transparent;
+    color:#008CBA;
+
+    border: 1px solid #008CBA;
+    border-radius: 3rem;
+
+    width: 5rem;
+    height: 3rem;
+
+    transition: background-color .2s, color .2s;
 
 }
 
+.auth_form__button:hover, .auth_form__button:active, .auth_form__button:focus{
+    background-color: #008CBA;
+    color:white;
+}
 
 /*MODIFIER*/
